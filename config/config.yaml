@@ -1,0 +1,63 @@
+# config/config.yaml
+
+project:
+  name: "NRSC Cloud Shadow Challenge"
+  author: "Your Team Name"
+  random_seed: 42
+
+data:
+  raw_dir: "data/raw/"
+  processed_dir: "data/processed/"
+  labels_dir: "data/labels/"
+  external_dir: "data/external/"
+  patch_size: 256
+  train_test_split: 0.8
+  bands: ["green", "red", "nir"]
+  toa_params_file: "data/external/TOA_help.zip"
+
+model:
+  architecture: "attention_unet"
+  input_channels: 3
+  num_classes: 3    # 0: NOCLOUD, 1: CLOUD, 2: SHADOW
+  pretrained: false
+  loss_function: "FocalLoss"
+  optimizer: "Adam"
+  learning_rate: 0.001
+  scheduler: "ReduceLROnPlateau"
+  batch_size: 16
+  epochs: 150
+  activation: "ReLU"
+  softmax: true
+
+augmentation:
+  horizontal_flip: true
+  vertical_flip: true
+  rotation: true
+  brightness: true
+  contrast: true
+
+inference:
+  input_dir: "data/raw/test/"
+  output_dir: "results/predictions/test/"
+  output_mask_dtype: "uint8"
+  shapefile_crs: "EPSG:4326"
+  save_geotiff: true
+  save_shapefile: true
+
+evaluation:
+  metrics: ["iou", "precision", "recall", "f1_score", "accuracy"]
+  min_accuracy: 0.90
+
+output:
+  submission_dir: "submission/"
+  report_file: "submission/Report.pdf"
+  training_csv: "submission/Training.csv"
+  requirements_file: "submission/Requirements.txt"
+  inference_code_zip: "submission/Inference_Code.zip"
+  model_zip: "submission/Model.zip"
+  labeled_data_zip: "submission/Training_Labeled_data.zip"
+  metrics_table: "submission/evaluation_metrics.csv"
+
+logging:
+  log_dir: "results/training_logs/"
+  log_level: "INFO"
